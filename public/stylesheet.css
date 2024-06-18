@@ -189,7 +189,7 @@ body {
     margin-right: 10px; /* Augmente la marge à droite du bouton "Cocher" */
 }
 .card.task-card.completed::after {
-    content: "Done";
+    content: "Terminée";
     color: #fff; /* Couleur du texte du tampon */
     background-color: #28a745; /* Couleur de fond du tampon */
     font-size: 1.5em; /* Taille du texte du tampon */
