@@ -29,5 +29,5 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Ajoutez d'autres relations ou fonctionnalités selon vos besoins.
+
 }
