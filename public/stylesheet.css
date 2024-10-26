@@ -1,0 +1,322 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: black;
+}
+
+/* Navigation Bar */
+.nav-bar {
+    background-color: #444;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.nav-bar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.nav-bar a.right {
+    float: right;
+}
+
+.nav-bar a:hover, .nav-bar a.active {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+/* Home Section */
+.home-section {
+    width: 80%;
+    margin: 10px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+
+
+/* Button Styles */
+
+
+.button-container a:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Login Form Styles */
+form {
+    border-radius: 0px;
+    padding: 0px 0px; /* Modifié pour réduire l'espace */
+    width: auto; /* Ajusté pour s'adapter à la taille de l'écran */
+    margin: auto; /* Centré horizontalement */
+}
+
+form div {
+    margin-bottom: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+form button {
+    background-color: #007bff;
+    color: white;
+    padding: 0px 2px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+form button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+.form-check-input {
+    /* Aligner la case à cocher avec le texte */
+    vertical-align: middle;
+    margin-top: -1px; /* Ajuster selon vos besoins */
+}
+
+.form-check-label {
+    /* Aligner le texte avec la case à cocher */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Styles pour le titre "Connexion" */
+h1 {
+    margin-bottom: 10px; /* Réduit l'espace sous le titre */
+    font-weight: bold; /* Rend le texte en gras */
+}
+
+/* Styles pour renforcer les labels */
+.form-label-strong {
+    font-weight: bold; /* Rend le texte en gras */
+    color: #333; /* Couleur du texte, ajustez selon vos préférences */
+}
+.task-card:hover {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+}
+
+
+
+html, body {
+    height: 100%; /* Assurez-vous que le html et le body prennent toute la hauteur */
+    margin: 0; /* Réinitialisez les marges par défaut */
+}
+
+body {
+    display: flex;
+    flex-direction: column; /* Organise le contenu en colonne */
+}
+
+.content {
+    flex: 1; /* Le contenu prendra tout l'espace disponible */
+}
+
+.footer {
+    margin-top: auto; /* Le pied de page sera poussé vers le bas */
+}
+.button-container a.logout-button {
+    background-color: #f44336; /* Couleur de fond pour le bouton de déconnexion */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-container a.logout-button:hover {
+    background-color: #d32f2f; /* Couleur de fond au survol */
+    transform: scale(1.05); /* Effet de zoom au survol */
+}
+.task-completed {
+    background-color: #d4edda; /* Couleur de fond pour les tâches complétées */
+}
+
+.task-card {
+    transition: box-shadow 0.3s ease, transform 0.3s ease; /* Transition douce pour l'ombre et la transformation */
+}
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #555;
+    color: white;
+    text-align: center;
+  }
+  
+  .strong-echeance {
+    color: red;
+    font-weight: bold;
+}
+
+.strong-creation {
+    color: green;
+    font-weight: bold;
+}
+.task-actions button {
+    margin: 0 5px; /* Ajoute une marge horizontale de 5px de chaque côté du bouton */
+}
+.toggle-complete {
+    margin-right: 10px; /* Augmente la marge à droite du bouton "Cocher" */
+}
+.card.task-card.completed::after {
+    content: "Terminée";
+    color: #fff; /* Couleur du texte du tampon */
+    background-color: #28a745; /* Couleur de fond du tampon */
+    font-size: 1.5em; /* Taille du texte du tampon */
+    font-weight: bold; /* Gras pour le texte du tampon */
+    position: absolute; /* Positionnement absolu */
+    top: 10px; /* Position depuis le haut de la carte */
+    right: 10px; /* Position depuis la droite de la carte */
+    padding: 5px 10px; /* Espacement intérieur du tampon */
+    border-radius: 5px; /* Bordures arrondies du tampon */
+    transform: rotate(-15deg); /* Rotation du tampon pour un effet incliné */
+    z-index: 0; /* S'assure que le tampon est au-dessus des autres éléments */
+  }
+
+  .container.mt-5 {
+    height: auto; /* La hauteur s'adapte au contenu */
+    max-height: 70vh; /* Hauteur maximale à 50% de la hauteur de la fenêtre */
+  }
+.card-title {
+    text-align: center; /* Centre le texte horizontalement */
+    margin: 0; /* Réinitialise les marges par défaut */
+    padding: 10px 0; /* Ajoute un peu d'espace au-dessus et en dessous du titre */
+  }
+  .form-label {
+    font-weight: bold; /* Rend le texte en gras */
+    color: black; /* Couleur attrayante pour l'étiquette */
+    font-size: 1.1rem; /* Taille légèrement plus grande pour plus de visibilité */
+    margin-bottom: .5rem; /* Espace en dessous de l'étiquette */
+    display: inline-block; /* Assurez-vous que l'étiquette est alignée correctement avec le champ */
+  }
+  .date {
+    font-weight: bold; /* Rend le texte en gras */
+    color: black; /* Couleur attrayante pour l'étiquette */
+    font-size: 1.1rem; /* Taille légèrement plus grande pour plus de visibilité */
+  }
+  
+  /* Style général pour les textarea */
+textarea {
+    width: 100%; /* Utilisez toute la largeur disponible */
+    padding: 10px; /* Ajoutez un peu d'espace à l'intérieur */
+    border: 1px solid #ccc; /* Une bordure subtile */
+    border-radius: 4px; /* Des coins arrondis */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* Une ombre intérieure légère */
+    resize: vertical; /* Permet à l'utilisateur de redimensionner verticalement */
+    font-family: 'Roboto', sans-serif; /* Assortissez la police au reste de votre design */
+    font-size: 1rem; /* Une taille de police lisible */
+    line-height: 1.5; /* Un espacement de ligne confortable */
+    margin-bottom: 1rem; /* Espace en dessous du textarea */
+  }
+  
+  /* Style pour les textarea lorsqu'ils sont en focus */
+  textarea:focus {
+    border-color: #80bdff; /* Une bordure bleue lors du focus */
+    outline: 0; /* Supprimez l'outline par défaut */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Une ombre extérieure pour le focus */
+  }
+  
+  /* Style pour les textarea désactivés ou en lecture seule */
+  textarea:disabled,
+  textarea[readonly] {
+    background-color: #e9ecef; /* Un fond gris pour indiquer l'état non modifiable */
+    opacity: 1; /* Assurez-vous que le textarea n'est pas trop transparent */
+  }
+  
+  .form-container {
+    width: 80%; /* Le formulaire utilisera 90% de la largeur de son conteneur parent */
+    margin: auto; /* Centrer le formulaire horizontalement */
+    padding: 10px; /* Ajouter de l'espace à l'intérieur du formulaire */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre portée pour un effet de profondeur */
+    background-color: white; /* Couleur de fond du formulaire */
+    border-radius: 10px; /* Coins arrondis */
+  }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+  }
+  .nav-bar {
+    background-color: #444;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .nav-bar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  .nav-bar a.right {
+    float: right;
+  }
+  .nav-bar a:hover, .nav-bar a.active {
+    background-color: #555;
+    transform: scale(1.1);
+  }
+  .home-section {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #fff;
+    border-radius: 10px;
+  }
+
+.card-header h1{
+    color: #000;
+}
+.btn-primary {
+    padding: 10px 40px; /* Augmente le padding pour un bouton plus grand */
+    font-size: 20px; /* Augmente la taille de la police */
+    border-radius: 05px;
+  }
+.form-check-label{
+    color: #000;
+}
+h1 {
+   justify-content: center; /* ou une largeur fixe */
+
+  }
+  
+.title{
+    text-align: center
+}
+.form.control{
+    width: 150px;
+}
