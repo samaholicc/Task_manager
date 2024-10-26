@@ -40,7 +40,7 @@
                                     <strong>Veuillez entrer une adresse e-mail valide.</strong>
                                 </span>
                             </div>
-                            <label for="password" class="form-label form-label-strong">{{ __('Mot de passe') }}</label> <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password"> @error('password') <span class="invalid-feedback" role="alert">{{ $message }}</span> @enderror </div> <!-- Confirm Password --> <div class="form-group mb-3"> <label for="password_confirmation" class="form-label form-label-strong">{{ __('Confirmer le mot de passe') }}</label> <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password"> @error('password_confirmation') <span class="invalid-feedback" role="alert">{{ $message }}</span> @enderror
+                            <label for="password" class="form-label form-label-strong">{{ __('Mot de passe') }}</label> <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password"> @error('password') <span class="invalid-feedback" role="alert">{{ $message }}</span> @enderror </div> 
                             <!-- Submit Button -->
                             <div class="form-group mb-0">
                                 <button type="submit" class="btn btn-primary btn-block">
