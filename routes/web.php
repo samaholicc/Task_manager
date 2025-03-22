@@ -55,4 +55,9 @@ Route::middleware('auth')->group(function () {
         }
         return 'No user or task found.';
     })->middleware('throttle:1,1');
+
+    Route::get('/test-session', function () {
+        session(['test' => 'Session works!']);
+        return session('test');
+    });
 });
