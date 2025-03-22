@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionnaire de Tâches - Nouvelle Tâche</title>
+    <title>Gestionnaire de Tâches - Modifier Profil</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -321,6 +321,26 @@
             margin-top: 5px;
         }
 
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        [data-theme="dark"] .alert-success {
+            background-color: #2a5a3a;
+            color: #a3d7b0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .btn {
             width: 100%;
             padding: 12px;
@@ -433,65 +453,36 @@
     </div>
 </div>
 <div class="content">
-    <form class="form-container" method="POST" action="{{ route('tasks.store') }}">
+    <form class="form-container" method="POST" action="{{ route('profile.update') }}">
         @csrf
+        @method('PATCH')
         <div class="title">
-            <h1>Nouvelle Tâche</h1>
+            <h1>Modifier Profil</h1>
         </div>
         <div class="form-body">
+            @if (session('success'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="form-group">
-                <label for="title" class="form-label">Titre de la tâche</label>
-                <i class="fas fa-heading"></i>
-                <input type="text" class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" id="title" name="title" value="{{ old('title') }}" required>
+                <label for="name" class="form-label">Nom</label>
+                <i class="fas fa-user"></i>
+                <input type="text" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" id="name" name="name" value="{{ old('name', $user->name) }}" required>
                 <div class="invalid-feedback">
-                    {{ $errors->first('title', 'Veuillez entrer un titre pour la tâche.') }}
+                    {{ $errors->first('name', 'Veuillez entrer votre nom.') }}
                 </div>
             </div>
             <div class="form-group">
-                <label for="description" class="form-label">Description</label>
-                <i class="fas fa-align-left"></i>
-                <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
+                <label for="email" class="form-label">Adresse email</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="email" name="email" value="{{ old('email', $user->email) }}" required>
                 <div class="invalid-feedback">
-                    {{ $errors->first('description', 'Veuillez entrer une description pour la tâche.') }}
+                    {{ $errors->first('email', 'Veuillez entrer une adresse email valide.') }}
                 </div>
-            </div>
-            <div class="form-group">
-                <label for="date_echeance" class="form-label">Date d'échéance</label>
-                <i class="fas fa-calendar-alt"></i>
-                <input type="date" class="form-control {{ $errors->has('date_echeance') ? 'is-invalid' : '' }}" id="date_echeance" name="date_echeance" min="2024-06-16" value="{{ old('date_echeance') }}" required>
-                <div class="invalid-feedback">
-                    {{ $errors->first('date_echeance', 'Veuillez sélectionner une date d\'échéance.') }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="heure_echeance" class="form-label">Heure d'échéance</label>
-                <i class="fas fa-clock"></i>
-                <input type="time" class="form-control {{ $errors->has('heure_echeance') ? 'is-invalid' : '' }}" id="heure_echeance" name="heure_echeance" value="{{ old('heure_echeance') }}" required>
-                <div class="invalid-feedback">
-                    {{ $errors->first('heure_echeance', 'Veuillez sélectionner une heure d\'échéance.') }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="category" class="form-label">Catégorie</label>
-                <i class="fas fa-tag"></i>
-                <select class="form-control" id="category" name="category">
-                    <option value="">Sélectionner une catégorie</option>
-                    <option value="Work" {{ old('category') === 'Work' ? 'selected' : '' }}>Travail</option>
-                    <option value="Personal" {{ old('category') === 'Personal' ? 'selected' : '' }}>Personnel</option>
-                    <option value="Urgent" {{ old('category') === 'Urgent' ? 'selected' : '' }}>Urgent</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="priority" class="form-label">Priorité</label>
-                <i class="fas fa-exclamation-circle"></i>
-                <select class="form-control" id="priority" name="priority">
-                    <option value="Low" {{ old('priority') === 'Low' ? 'selected' : '' }}>Basse</option>
-                    <option value="Medium" {{ old('priority', 'Medium') === 'Medium' ? 'selected' : '' }}>Moyenne</option>
-                    <option value="High" {{ old('priority') === 'High' ? 'selected' : '' }}>Haute</option>
-                </select>
             </div>
             <button type="submit" class="btn">
-                <i class="fas fa-save"></i> Enregistrer la tâche
+                <i class="fas fa-save"></i> Enregistrer les modifications
             </button>
         </div>
     </form>

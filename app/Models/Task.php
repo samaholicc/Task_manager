@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
@@ -17,10 +17,28 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
-        'user_id', ];// Assurez-vous que votre table de tâches a une colonne 'user_id'
-    protected $guarded = [];
+        'date_echeance',
+        'heure_echeance',
+        'user_id',
+        'completed',
+        'category',
+        'priority',
+        'position',
+    ];
 
-    protected $dates = ['date_echeance', 'heure_echeance'];
+    /**
+     * Les attributs qui doivent être castés.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'date_echeance' => 'date:Y-m-d', // Cast as a date (Y-m-d format)
+        'heure_echeance' => 'string', // Treat as a string to preserve H:i format
+        'completed' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     /**
      * Obtient l'utilisateur propriétaire de la tâche.
      */
@@ -28,6 +46,4 @@ class Task extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-
 }

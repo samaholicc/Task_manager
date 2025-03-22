@@ -1,102 +1,188 @@
-<?php 
+<?php
+
 namespace App\Http\Controllers;
-use Auth;
-use Illuminate\Http\Request;
+
 use App\Models\Task;
+use App\Notifications\TaskReminder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-    /**
-     * Stocker une nouvelle tâche dans la base de données.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    public function index(Request $request)
+{
+    \Log::info('Index method accessed', [
+        'auth_check' => Auth::check(),
+        'user_id' => Auth::id(),
+        'session_id' => session()->getId()
+    ]);
+
+    $tasks = [];
+    if (Auth::check()) {
+        $query = Task::where('user_id', Auth::id());
+
+        // Filter by status
+        if ($request->has('status')) {
+            if ($request->status === 'completed') {
+                $query->where('completed', true);
+            } elseif ($request->status === 'pending') {
+                $query->where('completed', false);
+            }
+        }
+
+        // Filter by category
+        if ($request->has('category') && $request->category) {
+            $query->where('category', $request->category);
+        }
+
+        // Sort
+        if ($request->has('sort')) {
+            if ($request->sort === 'due_date') {
+                $direction = $request->direction === 'asc' ? 'asc' : 'desc';
+                $query->orderBy('date_echeance', $direction)
+                      ->orderBy('heure_echeance', $direction);
+            } elseif ($request->sort === 'position') {
+                $query->orderBy('position', 'asc');
+            }
+        } else {
+            $query->orderBy('position', 'asc');
+        }
+
+        $tasks = $query->get();
+    }
+
+ 
+
+    return view('welcome', compact('tasks'));
+    }
+    public function create()
+    {
+        return view('newtask');
+    }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date_echeance' => 'required|date',
+            'heure_echeance' => 'required|date_format:H:i',
+            'category' => 'nullable|string',
+            'priority' => 'nullable|in:Low,Medium,High',
         ]);
 
-        $task = new Task;
-        $task->title = $request->title;
-        $task->description = $request->description;
-        $task->date_echeance = $request->date_echeance;
-        $task->user_id = Auth::id();
-        $task->heure_echeance =  $request->heure_echeance;
-        $task->save();
-        
+        $task = Task::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'date_echeance' => $validatedData['date_echeance'],
+            'heure_echeance' => $validatedData['heure_echeance'],
+            'user_id' => Auth::id(),
+            'completed' => false,
+            'category' => $validatedData['category'] ?? null,
+            'priority' => $validatedData['priority'] ?? 'Medium',
+            'position' => Task::where('user_id', Auth::id())->max('position') + 1,
+        ]);
+
+        // Send a reminder notification if the due date is within 24 hours
+        if ($task->date_echeance->isToday() || $task->date_echeance->isTomorrow()) {
+            $task->user->notify(new TaskReminder($task));
+        }
 
         return redirect()->route('my_tasks')->with('success', 'Tâche créée avec succès.');
     }
 
-
-    public function create()
-{
-    return view('newtask'); // Assurez-vous que la vue 'tasks.create' existe
-}
-public function index()
-{   
-    $tasks = Task::where('user_id', Auth::id())->get();
-
-    
-
-    return view('mytasks', compact('tasks'));
-}
-public function showTasks()
-
-{
-    // Récupérer l'utilisateur connecté
-    $user = auth()->user();
-
-    // Récupérer uniquement les tâches de cet utilisateur
-    $tasks = Task::where('user_id', $user->id)->get();
-
-    // Retourner la vue avec les tâches de l'utilisateur
-    return view('mytasks', compact('tasks'));
-}
-
-
-
-
-public function edit($id)
-{
-    $task = Task::findOrFail($id); // Fetch task by ID or fail if not found
-    return view('edit', compact('task')); // Pass the task to the view
-}
-
-public function update(Request $request, Task $task)
-{
-    // Validez les données de la requête
-    $validatedData = $request->validate([
-        'title' => 'required|max:255',
-        'description' => 'required',
-        // autres champs si nécessaire
-    ]);
-
-    // Mettez à jour la tâche avec les données validées
-    $task->update($validatedData);
-
-    // Redirigez vers une page avec un message de succès
-    return redirect()->route('my_tasks')->with('success', 'Tâche mise à jour avec succès.');
-}
-/**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function edit($id)
     {
-        Task::destroy($id);
-        return redirect('my-tasks')->with('flash_message', 'Tache supprimée!');  
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
+        return view('edit', compact('task'));
     }
 
-public function getHeureEcheanceAttribute($value)
+    public function update(Request $request, Task $task)
+    {
+        if ($task->user_id !== Auth::id()) {
+            return redirect()->route('my_tasks')->with('error', 'Unauthorized');
+        }
+
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date_echeance' => 'required|date',
+            'heure_echeance' => 'required|date_format:H:i',
+            'category' => 'nullable|string',
+            'priority' => 'nullable|in:Low,Medium,High',
+        ]);
+
+        $task->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'date_echeance' => $validatedData['date_echeance'],
+            'heure_echeance' => $validatedData['heure_echeance'],
+            'category' => $validatedData['category'] ?? null,
+            'priority' => $validatedData['priority'] ?? 'Medium',
+        ]);
+
+        return redirect()->route('my_tasks')->with('success', 'Tâche mise à jour avec succès.');
+    }
+
+    public function destroy($id)
+    {
+        $task = Task::where('user_id', Auth::id())->findOrFail($id);
+        $task->delete();
+        return redirect()->route('my_tasks')->with('success', 'Tâche supprimée avec succès!');
+    }
+
+    public function toggle(Task $task)
+    {
+        if ($task->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $task->completed = !$task->completed;
+        $task->save();
+
+        return response()->json(['completed' => $task->completed]);
+    }
+
+    public function reorder(Request $request)
 {
-    return Carbon::parse($value)->format('H:i');
-}
+    \Log::info('Reorder Request:', $request->all());
+
+    $taskIds = $request->input('taskIds', []);
+
+    if (!is_array($taskIds) || empty($taskIds)) {
+        \Log::error('Invalid task IDs:', ['taskIds' => $taskIds]);
+        return response()->json(['success' => false, 'message' => 'Invalid task IDs'], 400);
+    }
+
+    $updatedCount = 0;
+    foreach ($taskIds as $index => $taskId) {
+        // Cast $taskId to integer
+        $taskId = (int) $taskId;
+        $task = Task::where('user_id', Auth::id())->where('id', $taskId)->first();
+        if ($task) {
+            $result = $task->update(['position' => $index + 1]);
+            if ($result) {
+                $updatedCount++;
+                \Log::info('Updated task position:', ['taskId' => $taskId, 'position' => $index + 1]);
+            } else {
+                \Log::error('Failed to update task position:', ['taskId' => $taskId, 'position' => $index + 1]);
+            }
+        } else {
+            \Log::warning('Task not found or not owned by user:', ['taskId' => $taskId, 'userId' => Auth::id()]);
+        }
+    }
+
+    if ($updatedCount === 0) {
+        \Log::error('No tasks were updated', ['taskIds' => $taskIds]);
+        return response()->json(['success' => false, 'message' => 'No tasks were updated'], 400);
+    }
+
+    \Log::info('Reorder successful', ['updatedCount' => $updatedCount]);
+    return response()->json(['success' => true, 'updated' => $updatedCount]);
+    }
 }

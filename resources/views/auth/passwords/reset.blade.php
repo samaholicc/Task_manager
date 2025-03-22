@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestionnaire de Tâches - Inscription</title>
+    <title>Gestionnaire de Tâches - Réinitialisation du mot de passe</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
@@ -92,7 +92,7 @@
             font-size: 1em;
             font-weight: 500;
             color: #ffffff;
-            background-color: #007bff; /* Blue to match the Connexion button */
+            background-color: #28a745;
             padding: 10px 25px;
             border-radius: 8px;
             text-decoration: none;
@@ -100,7 +100,7 @@
         }
 
         .nav-bar .right a:hover {
-            background-color: #0056b3;
+            background-color: #218838;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
@@ -213,41 +213,54 @@
             to { opacity: 1; }
         }
 
-        .checkbox-inline {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-inline input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .checkbox-inline label {
-            font-size: 1em;
-            color: #333;
-            cursor: pointer;
-        }
-
         .btn {
             width: 100%;
-            padding: 12px;
-            background-color: #28a745; /* Green to match the Inscription button in the nav-bar */
+            padding: 15px;
+            background-color: #007bff;
             color: #ffffff;
             border: none;
             border-radius: 8px;
+            font-size: 1.1em;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
         }
 
         .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .register-link {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            margin-top: 15px;
+        }
+
+        .register-link:hover {
             background-color: #218838;
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in;
         }
 
         .alert-danger {
@@ -294,6 +307,11 @@
             .nav-bar .left i {
                 font-size: 1.5em;
             }
+
+            .btn, .register-link {
+                padding: 12px;
+                font-size: 1em;
+            }
         }
     </style>
 </head>
@@ -302,98 +320,86 @@
         <div class="nav-bar">
             <div class="left">
                 <i class="fas fa-tasks"></i>
-                <a href="#home" class="active">Task Manager</a>
+                <a href="{{ route('login') }}" class="active">Task Manager</a>
             </div>
             <div class="right">
-                <a href="{{ route('login') }}">Connexion</a>
+                <a href="{{ route('register') }}">Inscription</a>
             </div>
         </div>
         <div class="home-section">
             <div class="card">
                 <div class="card-header">
-                    <h1>Inscription</h1>
-                    <div class="subtitle">Créez un compte pour gérer vos tâches</div>
+                    <h1>Réinitialisation du mot de passe</h1>
+                    <div class="subtitle">Entrez votre nouveau mot de passe</div>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-                        <!-- Name -->
-                        <div class="form-group">
-                            <label for="name" class="form-label">{{ __('Nom') }}</label>
-                            <i class="fas fa-user field-icon"></i>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                    @if ($errors->has('token') || $errors->has('email'))
+                        <div class="alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <p><a href="{{ route('password.request') }}">Demander un nouveau lien de réinitialisation</a></p>
                         </div>
+                    @else
+                        <form method="POST" action="{{ route('password.update') }}">
+                            @csrf
+                            <!-- Hidden Token -->
+                            <input type="hidden" name="token" value="{{ $token ?? '' }}">
 
-                        <!-- Email Address -->
-                        <div class="form-group">
-                            <label for="email" class="form-label">{{ __('Adresse email') }}</label>
-                            <i class="fas fa-envelope field-icon"></i>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <!-- Password -->
-                        <div class="form-group">
-                            <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
-                            <i class="fas fa-lock field-icon"></i>
-                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-                            <i class="fas fa-eye password-toggle" id="togglePassword"></i>
-                            @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="form-group">
-                            <label for="password_confirmation" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
-                            <i class="fas fa-lock field-icon"></i>
-                            <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
-                            <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
-                            @error('password_confirmation')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                            <span id="password-error" class="invalid-feedback" style="display: none;">
-                                Les mots de passe ne correspondent pas.
-                            </span>
-                        </div>
-
-                        <!-- Show Password Checkbox -->
-                        <div class="checkbox-inline">
-                            <input type="checkbox" id="show-password">
-                            <label for="show-password">Afficher le mot de passe</label>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <button type="submit" class="btn">
-                                {{ __('Inscription') }}
-                            </button>
-                        </div>
-
-                        <!-- General Error Message -->
-                        @if ($errors->any())
-                            <div class="alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
+                            <!-- Email Address -->
+                            <div class="form-group">
+                                <label for="email" class="form-label">{{ __('Adresse email') }}</label>
+                                <i class="fas fa-envelope field-icon"></i>
+                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
-                        @endif
-                    </form>
+
+                            <!-- Password -->
+                            <div class="form-group">
+                                <label for="password" class="form-label">{{ __('Mot de passe') }}</label>
+                                <i class="fas fa-lock field-icon"></i>
+                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="form-group">
+                                <label for="password-confirm" class="form-label">{{ __('Confirmer le mot de passe') }}</label>
+                                <i class="fas fa-lock field-icon"></i>
+                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                <i class="fas fa-eye password-toggle" id="toggleConfirmPassword"></i>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="form-group">
+                                <button type="submit" class="btn">
+                                    {{ __('Réinitialiser le mot de passe') }}
+                                </button>
+                            </div>
+
+                            <!-- General Error Message -->
+                            @if ($errors->any())
+                                <div class="alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -403,48 +409,29 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const showPasswordCheckbox = document.getElementById('show-password');
-            const passwordField = document.getElementById('password');
-            const confirmPasswordField = document.getElementById('password_confirmation');
-            const passwordError = document.getElementById('password-error');
-            const togglePassword = document.getElementById('togglePassword');
-            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-
-            // Show/hide password with checkbox
-            showPasswordCheckbox.addEventListener('change', function() {
-                const type = showPasswordCheckbox.checked ? 'text' : 'password';
-                passwordField.type = type;
-                confirmPasswordField.type = type;
-            });
-
-            // Toggle password visibility with eye icon
+        // Password toggle for password field
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        if (togglePassword && passwordInput) {
             togglePassword.addEventListener('click', function() {
-                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordField.setAttribute('type', type);
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
+        }
 
-            // Toggle confirm password visibility with eye icon
+        // Password toggle for confirm password field
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+        const confirmPasswordInput = document.getElementById('password-confirm');
+        if (toggleConfirmPassword && confirmPasswordInput) {
             toggleConfirmPassword.addEventListener('click', function() {
-                const type = confirmPasswordField.getAttribute('type') === 'password' ? 'text' : 'password';
-                confirmPasswordField.setAttribute('type', type);
+                const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                confirmPasswordInput.setAttribute('type', type);
                 this.classList.toggle('fa-eye');
                 this.classList.toggle('fa-eye-slash');
             });
-
-            // Password match validation
-            const form = document.querySelector('form');
-            form.addEventListener('submit', function(event) {
-                const password = passwordField.value;
-                const confirmPassword = confirmPasswordField.value;
-                if (password !== confirmPassword) {
-                    event.preventDefault();
-                    passwordError.style.display = 'block';
-                }
-            });
-        });
+        }
     </script>
 </body>
 </html>
